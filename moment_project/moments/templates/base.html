@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Момент</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <p>Привет, {{ user.username }}! <a href="{% url 'logout' %}">Выйти</a></p>
+    {% else %}
+        <p><a href="{% url 'login' %}">Войти</a></p>
+    {% endif %}
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

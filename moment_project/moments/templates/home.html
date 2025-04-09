@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Момент</title>
+</head>
+<body>
+    <h1>Момент ✨</h1>
+
+    {% if user.is_authenticated %}
+        <p>Привет, {{ user.username }}! <a href="{% url 'logout' %}">Выйти</a></p>
+    {% else %}
+        <a href="{% url 'login' %}">Войти</a>
+    {% endif %}
+
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Отправить</button>
+        <a href="{% url 'set_name' %}">Сменить имя</a>
+    </form>
+
+    <hr>
+
+    <h2>Свежие посты</h2>
+    {% for post in posts %}
+        <div style="margin-bottom: 1em;">
+            <p>{{ post.content }}</p>
+            <small>Опубликовано: {{ post.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>Пока нет постов. Будь первым!</p>
+    {% endfor %}
+</body>
+</html>

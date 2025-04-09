@@ -1,0 +1,6 @@
+<h2>Как к тебе обращаться?</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="text" name="name" placeholder="Введите имя (можно оставить пустым)">
+    <button type="submit">Войти</button>
+</form>
