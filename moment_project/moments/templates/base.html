@@ -4,126 +4,409 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moment Social</title>
+    <title>The_Moment</title>
     <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* General Reset and Body Styling */
+        :root {
+            --gradient-primary: linear-gradient(135deg, #6e45e2 0%, #89d4cf 100%);
+            --gradient-accent: linear-gradient(135deg, #ff7b25 0%, #ff52e5 100%);
+            --gradient-card: linear-gradient(145deg, #ffffff 0%, #f8f9ff 100%);
+            --gradient-header: linear-gradient(to right, #ffffff 0%, rgba(255,255,255,0.95) 100%);
+            --text-dark: #1a1a2e;
+            --text-light: #f8f9ff;
+            --shadow-sm: 0 2px 8px -2px rgba(0,0,0,0.08);
+            --shadow-md: 0 8px 20px -5px rgba(0,0,0,0.12);
+            --shadow-lg: 0 15px 40px -10px rgba(0,0,0,0.15);
+            --border-radius: 16px;
+            --border-radius-lg: 24px;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+            --spacing-unit: 1rem;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7ff;
+            background-image: radial-gradient(circle at 10% 20%, rgba(110,69,226,0.05) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(137,212,207,0.05) 0%, transparent 20%);
+            color: var(--text-dark);
+            line-height: 1.7;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 calc(var(--spacing-unit) * 2);
         }
 
         header {
-            background-color: #4CAF50;
-            padding: 15px;
-            text-align: center;
+            background: var(--gradient-header);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: calc(var(--spacing-unit) * 1.5) 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            border-bottom: 1px solid rgba(255,255,255,0.7);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 0.5);
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            font-size: 1.6rem;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 1.5);
         }
 
         nav a {
             text-decoration: none;
-            color: white;
-            padding: 10px 20px;
-            margin: 0 10px;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s, color 0.3s;
+            color: var(--text-dark);
+            font-weight: 600;
+            padding: calc(var(--spacing-unit) * 0.5) 0;
+            position: relative;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 0.5);
+            font-size: 0.95rem;
         }
 
-        /* Navigation Links */
-        nav a:hover {
-            background-color: #45a049;
-            color: #fff;
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient-accent);
+            transition: var(--transition);
+            border-radius: 3px;
+        }
+
+        nav a:hover:after,
+        nav a.active:after {
+            width: 100%;
         }
 
         nav a.active {
-            background-color: #2e8b57;
+            color: #6e45e2;
         }
 
-        /* Main Content */
-        main {
-            padding: 20px;
+        nav a:hover {
+            color: #6e45e2;
+            transform: translateY(-2px);
         }
 
-        /* Button Styles */
+        .auth-buttons {
+            display: flex;
+            gap: var(--spacing-unit);
+        }
+
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            font-weight: bold;
+            padding: calc(var(--spacing-unit) * 0.75) calc(var(--spacing-unit) * 1.5);
+            border-radius: var(--border-radius);
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: calc(var(--spacing-unit) * 0.5);
+            border: none;
+            font-size: 0.95rem;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+
+        .btn i {
+            font-size: 0.9rem;
         }
 
         .btn-primary {
-            background-color: #4CAF50;
-            color: white;
+            background: var(--gradient-primary);
+            color: var(--text-light);
+            box-shadow: var(--shadow-sm);
         }
+
         .btn-primary:hover {
-            background-color: #45a049;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-md);
         }
 
-        .btn-secondary {
-            background-color: #008CBA;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #007B9E;
-        }
-
-        .btn-danger {
-            background-color: #f44336;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #e53935;
+        .btn-outline {
+            background-color: transparent;
+            color: #6e45e2;
+            border: 2px solid;
+            border-image: var(--gradient-primary) 1;
         }
 
-        /* Responsive Design */
-        @media screen and (max-width: 768px) {
+        .btn-outline:hover {
+            background: linear-gradient(135deg, rgba(110,69,226,0.1) 0%, rgba(137,212,207,0.1) 100%);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: var(--text-light);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: var(--shadow-md);
+        }
+
+        main {
+            padding: calc(var(--spacing-unit) * 3) 0;
+        }
+
+        .card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            padding: calc(var(--spacing-unit) * 1.5);
+            margin-bottom: calc(var(--spacing-unit) * 1.5);
+            transition: var(--transition);
+            border: 1px solid rgba(255,255,255,0.6);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .fab {
+            position: fixed;
+            bottom: calc(var(--spacing-unit) * 2);
+            right: calc(var(--spacing-unit) * 2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 50;
+            font-size: 1.2rem;
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 15px 30px rgba(255, 82, 229, 0.3);
+        }
+
+        /* Decorative elements */
+        .blob {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            z-index: -1;
+        }
+
+        .blob-1 {
+            background: #6e45e2;
+            top: -100px;
+            left: -100px;
+        }
+
+        .blob-2 {
+            background: #89d4cf;
+            bottom: -100px;
+            right: -100px;
+        }
+
+        /* Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .nav-links {
+                gap: var(--spacing-unit);
+            }
+        }
+
+        @media (max-width: 768px) {
             nav {
-                text-align: center;
+                flex-direction: column;
+                gap: calc(var(--spacing-unit) * 1.5);
             }
-
-            nav a {
-                display: block;
-                margin: 10px 0;
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
             }
-
+            
+            .auth-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
             .btn {
                 width: 100%;
-                margin: 10px 0;
+                justify-content: center;
             }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Micro-interactions */
+        .hover-scale {
+            transition: var(--transition);
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            margin-right: 0.5rem;
+            box-shadow: 0 0 0 2px rgba(255, 123, 37, 0.3);
+            position: relative;
+        }
+
+        .status-indicator:after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            background: var(--gradient-accent);
+            z-index: -1;
+            opacity: 0;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.7; }
+            70% { transform: scale(1.3); opacity: 0; }
+            100% { transform: scale(0.8); opacity: 0; }
         }
     </style>
 </head>
 
 <body>
+    <!-- Decorative blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
     <header>
-        <nav>
-            <a href="{% url 'feed' %}" class="active">Feed</a> |
-            <a href="{% url 'view_profile' %}">My Profile</a> |
-            <a href="{% url 'edit_profile' %}">Edit Profile</a> |
-            <a href="{% url 'home' %}">Chat</a> |
-            {% if user.is_authenticated %}
-                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-primary">Login</a> |
-                <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
-            {% endif %}
-        </nav>
+        <div class="container">
+            <nav>
+                <a href="{% url 'feed' %}" class="logo floating">
+                    <i class="fas fa-infinity"></i> The_Moment
+                </a>
+                
+                <div class="nav-links">
+                    <a href="{% url 'feed' %}" class="active">
+                        <i class="fas fa-compass"></i> Explore
+                    </a>
+                    <a href="{% url 'view_profile' %}">
+                        <i class="fas fa-user-astronaut"></i> Profile
+                    </a>
+                    <a href="{% url 'edit_profile' %}">
+                        <i class="fas fa-cogs"></i> Settings
+                    </a>
+                    <a href="{% url 'home' %}">
+                        <i class="fas fa-comment-astronaut"></i> Messages
+                    </a>
+                </div>
+                
+                <div class="auth-buttons">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="btn btn-accent">
+                            <i class="fas fa-rocket"></i> Logout
+                        </a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                        <a href="{% url 'register' %}" class="btn btn-outline">
+                            <i class="fas fa-user-astronaut"></i> Join
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <main>
+    <main class="container">
         {% block content %}
         {% endblock %}
     </main>
+    
+    <a href="#" class="fab hover-scale">
+        <i class="fas fa-plus"></i>
+    </a>
 </body>
 </html>

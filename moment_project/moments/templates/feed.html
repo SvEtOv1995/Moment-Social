@@ -8,7 +8,7 @@
         <!-- Add New Post Section -->
         <div class="new-post">
             <h3>Share your thoughts</h3>
-            <form method="post">
+            <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <button type="submit" class="btn btn-primary">Post</button>
@@ -22,8 +22,29 @@
             <h3>Recent Posts</h3>
             {% for post in posts %}
                 <div class="post" style="margin-bottom: 1em; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                    <p>{{ post.content }}</p>
-                    <small>Posted on: {{ post.created_at }}</small>
+                    {% if post.content %}
+                        <p>{{ post.content }}</p>
+                    {% endif %}
+
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Image" style="max-width: 100%; height: auto;">
+                    {% endif %}
+
+                    {% if post.video %}
+                        <video controls style="max-width: 100%; height: auto;">
+                            <source src="{{ post.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+
+                    {% if post.hashtags %}
+                        <p><strong>Хештеги:</strong> {{ post.hashtags }}</p>
+                    {% endif %}
+
+                    <small>
+                        Posted on: {{ post.created_at }}<br>
+                        By: <a href="{% url 'view_profile' post.author.username %}">{{ post.author.username }}</a>
+                    </small>
                 </div>
             {% empty %}
                 <p>There are no posts yet. Be the first to share something!</p>

@@ -6,9 +6,10 @@ from django.contrib.auth.models import User
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['content']
+        fields = ['content', 'image', 'video', 'hashtags']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Поделись моментом...'}),
+            'content': forms.Textarea(attrs={'rows': 3}),
+            'hashtags': forms.TextInput(attrs={'placeholder': '#fun #life'}),
         }
 
 class ProfileForm(forms.ModelForm):

@@ -9,10 +9,13 @@ from django.utils.timezone import now
 
 
 class Post(models.Model):
-    content = models.TextField()
+    content = models.TextField(verbose_name="Подпись", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=50, default="Аноним")
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(upload_to='post_images/', blank=True, null=True)
+    video = models.FileField(upload_to='post_videos/', blank=True, null=True)
+    hashtags = models.CharField(max_length=255, blank=True, help_text="Введите хештеги через пробел, например: #fun #life")
 
 
     def is_active(self):
