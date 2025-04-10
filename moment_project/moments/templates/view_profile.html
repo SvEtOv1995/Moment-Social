@@ -1,0 +1,12 @@
+<!-- templates/view_profile.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>My Profile</h2>
+<ul>
+    <li><strong>Username:</strong> {{ user.username }}</li>
+    <li><strong>Email:</strong> {{ user.email }}</li>
+    <li><strong>Last Seen:</strong> {{ user.profile.last_seen }}</li>
+</ul>
+<a href="{% url 'edit_profile' %}">Edit Profile</a>
+{% endblock %}

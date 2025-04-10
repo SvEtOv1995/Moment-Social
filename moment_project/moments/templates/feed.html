@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="feed-container">
+        <h2>Welcome to your Feed, {{ user.username }}!</h2>
+        <p class="intro-text">Here you can view your posts, friends' posts, and more!</p>
+
+        <!-- Add New Post Section -->
+        <div class="new-post">
+            <h3>Share your thoughts</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Post</button>
+            </form>
+        </div>
+
+        <hr>
+
+        <!-- Posts Section -->
+        <div class="posts">
+            <h3>Recent Posts</h3>
+            {% for post in posts %}
+                <div class="post" style="margin-bottom: 1em; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                    <p>{{ post.content }}</p>
+                    <small>Posted on: {{ post.created_at }}</small>
+                </div>
+            {% empty %}
+                <p>There are no posts yet. Be the first to share something!</p>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

@@ -4,6 +4,8 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.timezone import now
+
 
 
 class Post(models.Model):
@@ -25,8 +27,16 @@ class Profile(models.Model):
     display_name = models.CharField(max_length=50, blank=True)
     anonymous = models.BooleanField(default=True)
 
+    # Новые поля:
+    age = models.PositiveIntegerField(null=True, blank=True)
+    interests = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
+    last_seen = models.DateTimeField(default=now)
+    rating = models.FloatField(default=0.0)
+    total_votes = models.IntegerField(default=0)
+
     def __str__(self):
-        return self.display_name if not self.anonymous else "Аноним"
+        return self.display_name or self.user.username or "Аноним"
     
     @receiver(post_save, sender=User)
     def create_profile(sender, instance, created, **kwargs):
@@ -40,5 +50,13 @@ class Match(models.Model):
 
     def __str__(self):
         return f'{self.user1.username} & {self.user2.username}'
+    
+class ProfileRating(models.Model):
+    rater = models.ForeignKey(User, on_delete=models.CASCADE)
+    target = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    value = models.IntegerField(choices=[(i, str(i)) for i in range(1, 6)])  # 1–5
+
+    class Meta:
+        unique_together = ('rater', 'target')
 
 

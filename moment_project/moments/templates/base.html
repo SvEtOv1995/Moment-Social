@@ -1,15 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+{% load static %}
 <head>
-    <title>Момент</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moment Social</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <style>
+        /* General Reset and Body Styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #4CAF50;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Navigation Links */
+        nav a:hover {
+            background-color: #45a049;
+            color: #fff;
+        }
+
+        nav a.active {
+            background-color: #2e8b57;
+        }
+
+        /* Main Content */
+        main {
+            padding: 20px;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #45a049;
+        }
+
+        .btn-secondary {
+            background-color: #008CBA;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #007B9E;
+        }
+
+        .btn-danger {
+            background-color: #f44336;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #e53935;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 768px) {
+            nav {
+                text-align: center;
+            }
+
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            .btn {
+                width: 100%;
+                margin: 10px 0;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    {% if user.is_authenticated %}
-        <p>Привет, {{ user.username }}! <a href="{% url 'logout' %}">Выйти</a></p>
-    {% else %}
-        <p><a href="{% url 'login' %}">Войти</a></p>
-    {% endif %}
-    <hr>
-    {% block content %}{% endblock %}
+    <header>
+        <nav>
+            <a href="{% url 'feed' %}" class="active">Feed</a> |
+            <a href="{% url 'view_profile' %}">My Profile</a> |
+            <a href="{% url 'edit_profile' %}">Edit Profile</a> |
+            <a href="{% url 'home' %}">Chat</a> |
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary">Login</a> |
+                <a href="{% url 'register' %}" class="btn btn-secondary">Register</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 </body>
 </html>
