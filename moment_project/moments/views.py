@@ -41,7 +41,8 @@ def feed(request):
     else:
         form = PostForm()
     
-    posts = Post.objects.filter(author__isnull=False).order_by('-created_at')
+    # Получаем все посты, как с авторами, так и без, и сортируем по дате создания
+    posts = Post.objects.all().order_by('-created_at')
     return render(request, 'feed.html', {'form': form, 'posts': posts})
 
 @login_required
