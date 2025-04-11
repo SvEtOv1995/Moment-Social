@@ -84,7 +84,7 @@ def register(request):
             return redirect('feed')
     else:
         form = UserRegistrationForm()
-    return render(request, 'register.html', {'form': form})
+    return render(request, 'registration/register.html', {'form': form})
 
 @login_required
 def create_post(request):

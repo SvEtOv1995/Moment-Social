@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="login-container">
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Sign in to continue to The_Moment</p>
+
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Your username and password didn't match. Please try again.
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                <input type="text" 
+                       name="{{ form.username.name }}" 
+                       id="{{ form.username.id_for_label }}" 
+                       class="form-input"
+                       required
+                       autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                <input type="password" 
+                       name="{{ form.password.name }}" 
+                       id="{{ form.password.id_for_label }}" 
+                       class="form-input"
+                       required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+        </form>
+
+        <div class="login-footer">
+            <p>Don't have an account? <a href="{% url 'register' %}">Create one</a></p>
+            <p><a href="#">Forgot password?</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .subtitle {
+        color: #666;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+    
+    .login-form {
+        margin-top: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #6e45e2;
+        box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.2);
+    }
+    
+    .btn-block {
+        width: 100%;
+        padding: 0.75rem;
+    }
+    
+    .login-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+    
+    .login-footer a {
+        color: #6e45e2;
+        text-decoration: none;
+    }
+    
+    .login-footer a:hover {
+        text-decoration: underline;
+    }
+    
+    .alert-danger {
+        color: #dc3545;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1rem;
+        border-radius: var(--border-radius);
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+    }
+</style>
+{% endblock %}

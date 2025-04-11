@@ -1,11 +1,131 @@
-<!-- templates/registration/register.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Register</button>
-</form>
+<div class="card auth-card">
+    <h2 class="auth-title">Join The_Moment</h2>
+    <p class="auth-subtitle">Create your account to start sharing moments</p>
+
+    <form method="post" class="auth-form">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        {{ error }}<br>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Username</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email</label>
+            {{ form.email }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password1.id_for_label }}">Password</label>
+            {{ form.password1 }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+            {{ form.password2 }}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Register</button>
+        
+        <div class="auth-links">
+            Already have an account? <a href="{% url 'login' %}">Sign in</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .auth-card {
+        max-width: 450px;
+        margin: 2rem auto;
+        padding: 2rem;
+    }
+    
+    .auth-title {
+        text-align: center;
+        margin-bottom: 0.5rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .auth-subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+    
+    .auth-form {
+        margin-top: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+    }
+    
+    .form-group input:focus {
+        border-color: #6e45e2;
+        box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.1);
+        outline: none;
+    }
+    
+    .btn-block {
+        display: block;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .auth-links {
+        margin-top: 1.5rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .auth-links a {
+        color: #6e45e2;
+        text-decoration: none;
+    }
+    
+    .auth-links a:hover {
+        text-decoration: underline;
+    }
+    
+    .alert-danger {
+        color: #dc3545;
+        padding: 0.75rem;
+        margin-bottom: 1.5rem;
+        border-radius: var(--border-radius);
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        font-size: 0.9rem;
+    }
+</style>
 {% endblock %}
