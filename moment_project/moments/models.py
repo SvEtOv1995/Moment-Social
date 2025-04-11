@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.timezone import now
+from django.core.exceptions import ValidationError
 
 
 
@@ -26,26 +27,89 @@ class Post(models.Model):
         return f"{self.content[:30]}..."
 
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    display_name = models.CharField(max_length=50, blank=True)
-    anonymous = models.BooleanField(default=True)
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+    display_name = models.CharField(
+        max_length=50,
+        blank=True,
+        verbose_name='Отображаемое имя'
+    )
+    anonymous = models.BooleanField(
+        default=True,
+        verbose_name='Анонимный режим'
+    )
+    age = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        verbose_name='Возраст'
+    )
+    interests = models.TextField(
+        blank=True,
+        verbose_name='Интересы'
+    )
+    photo = models.ImageField(
+        upload_to='profile_photos/',
+        blank=True,
+        null=True,
+        verbose_name='Фото профиля'
+    )
+    last_seen = models.DateTimeField(
+        default=now,
+        verbose_name='Последний вход'
+    )
+    rating = models.FloatField(
+        default=0.0,
+        verbose_name='Рейтинг'
+    )
+    total_votes = models.IntegerField(
+        default=0,
+        verbose_name='Количество оценок'
+    )
+    bio = models.TextField(
+        blank=True,
+        verbose_name='О себе'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата обновления'
+    )
 
-    # Новые поля:
-    age = models.PositiveIntegerField(null=True, blank=True)
-    interests = models.TextField(blank=True)
-    photo = models.ImageField(upload_to='profile_photos/', blank=True, null=True)
-    last_seen = models.DateTimeField(default=now)
-    rating = models.FloatField(default=0.0)
-    total_votes = models.IntegerField(default=0)
+    class Meta:
+        verbose_name = 'Профиль'
+        verbose_name_plural = 'Профили'
+        ordering = ['-rating']
 
     def __str__(self):
-        return self.display_name or self.user.username or "Аноним"
+        if self.display_name:
+            return self.display_name
+        elif self.user and self.user.username:
+            return self.user.username
+        return "Аноним"
+
+    def clean(self):
+        if self.age is not None and self.age < 13:
+            raise ValidationError({'age': 'Возраст должен быть не менее 13 лет'})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('view_profile_by_username', args=[self.user.username])
     
     @receiver(post_save, sender=User)
     def create_profile(sender, instance, created, **kwargs):
         if created:
             Profile.objects.create(user=instance)
-
+    
 class Match(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='match_user1')
     user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='match_user2')

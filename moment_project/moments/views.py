@@ -60,16 +60,14 @@ def view_profile_by_username(request, username):
 
 @login_required
 def edit_profile(request):
-    try:
-        profile = request.user.profile
-    except Profile.DoesNotExist:
-        profile = Profile.objects.create(user=request.user)
+    # Получаем или создаем профиль для текущего пользователя
+    profile, created = Profile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            return redirect('view_profile')
+            return redirect('view_profile')  # Перенаправляем на свой профиль
     else:
         form = ProfileForm(instance=profile)
     
