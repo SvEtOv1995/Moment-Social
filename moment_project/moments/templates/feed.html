@@ -6,7 +6,7 @@
         <p class="intro-text">Here you can view your posts, friends' posts, and more!</p>
 
         <!-- Add New Post Section -->
-        <div class="new-post">
+        <div class="new-post card">
             <h3>Share your thoughts</h3>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -21,34 +21,132 @@
         <div class="posts">
             <h3>Recent Posts</h3>
             {% for post in posts %}
-                <div class="post" style="margin-bottom: 1em; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                    {% if post.content %}
-                        <p>{{ post.content }}</p>
+                <div class="post card">
+                    {% if post.author %}
+                        <div class="post-author">
+                            <a href="{% url 'view_profile_by_username' post.author.username %}">
+                                {% if post.author.profile.avatar %}
+                                    <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}" class="author-avatar">
+                                {% else %}
+                                    <div class="avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                {{ post.author.username }}
+                            </a>
+                        </div>
                     {% endif %}
 
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" alt="Image" style="max-width: 100%; height: auto;">
-                    {% endif %}
+                    <div class="post-content">
+                        {% if post.content %}
+                            <p>{{ post.content }}</p>
+                        {% endif %}
 
-                    {% if post.video %}
-                        <video controls style="max-width: 100%; height: auto;">
-                            <source src="{{ post.video.url }}" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    {% endif %}
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Post image" class="post-image">
+                        {% endif %}
 
-                    {% if post.hashtags %}
-                        <p><strong>Хештеги:</strong> {{ post.hashtags }}</p>
-                    {% endif %}
+                        {% if post.video %}
+                            <video controls class="post-video">
+                                <source src="{{ post.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% endif %}
 
-                    <small>
-                        Posted on: {{ post.created_at }}<br>
-                        By: <a href="{% url 'view_profile' post.author.username %}">{{ post.author.username }}</a>
-                    </small>
+                        {% if post.hashtags %}
+                            <div class="hashtags">
+                                {% for tag in post.hashtags.split %}
+                                    <span class="hashtag">#{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="post-meta">
+                        <small>Posted on: {{ post.created_at }}</small>
+                    </div>
                 </div>
             {% empty %}
-                <p>There are no posts yet. Be the first to share something!</p>
+                <div class="empty-feed card">
+                    <p>There are no posts yet. Be the first to share something!</p>
+                </div>
             {% endfor %}
         </div>
     </div>
+
+    <style>
+        .feed-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .new-post {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+        
+        .post {
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+        }
+        
+        .post-author {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .author-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+        
+        .avatar-placeholder {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-card);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: #6e45e2;
+        }
+        
+        .post-image {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+        
+        .post-video {
+            max-width: 100%;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+        
+        .hashtags {
+            margin: 1rem 0;
+        }
+        
+        .hashtag {
+            display: inline-block;
+            margin-right: 0.5rem;
+            color: #6e45e2;
+        }
+        
+        .post-meta {
+            margin-top: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .empty-feed {
+            text-align: center;
+            padding: 2rem;
+        }
+    </style>
 {% endblock %}

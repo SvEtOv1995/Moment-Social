@@ -1,6 +1,51 @@
-<h2>Как к тебе обращаться?</h2>
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="name" placeholder="Введите имя (можно оставить пустым)">
-    <button type="submit">Войти</button>
-</form>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <div class="set-name-container">
+        <h2>Как к тебе обращаться?</h2>
+        <form method="post" class="set-name-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" 
+                       name="name" 
+                       placeholder="Введите имя (можно оставить пустым)"
+                       class="form-input"
+                       maxlength="30">
+            </div>
+            <button type="submit" class="btn btn-primary">Продолжить</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .set-name-container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .set-name-form {
+        margin-top: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius);
+        font-size: 1rem;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #6e45e2;
+        box-shadow: 0 0 0 2px rgba(110, 69, 226, 0.2);
+    }
+</style>
+{% endblock %}

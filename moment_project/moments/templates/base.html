@@ -353,6 +353,7 @@
             100% { transform: scale(0.8); opacity: 0; }
         }
     </style>
+
 </head>
 
 <body>
@@ -368,16 +369,16 @@
                 </a>
                 
                 <div class="nav-links">
-                    <a href="{% url 'feed' %}" class="active">
+                    <a href="{% url 'feed' %}" class="{% if request.resolver_match.url_name == 'feed' %}active{% endif %}">
                         <i class="fas fa-compass"></i> Explore
                     </a>
-                    <a href="{% url 'view_profile' %}">
+                    <a href="{% url 'view_profile' %}" class="{% if request.resolver_match.url_name == 'view_profile' %}active{% endif %}">
                         <i class="fas fa-user-astronaut"></i> Profile
                     </a>
-                    <a href="{% url 'edit_profile' %}">
+                    <a href="{% url 'edit_profile' %}" class="{% if request.resolver_match.url_name == 'edit_profile' %}active{% endif %}">
                         <i class="fas fa-cogs"></i> Settings
                     </a>
-                    <a href="{% url 'home' %}">
+                    <a href="{% url 'messages' %}" class="{% if request.resolver_match.url_name == 'messages' %}active{% endif %}">
                         <i class="fas fa-comment-astronaut"></i> Messages
                     </a>
                 </div>
@@ -405,7 +406,7 @@
         {% endblock %}
     </main>
     
-    <a href="#" class="fab hover-scale">
+    <a href="{% url 'create_post' %}" class="fab hover-scale">
         <i class="fas fa-plus"></i>
     </a>
 </body>

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Messages</h2>
+    <div class="messages-container">
+        {% comment %} Здесь будет список чатов/сообщений {% endcomment %}
+        <div class="empty-state">
+            <i class="fas fa-comments fa-3x"></i>
+            <p>Your messages will appear here</p>
+            <p>Start a conversation with someone!</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .messages-container {
+        padding: 20px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #666;
+    }
+    
+    .empty-state i {
+        margin-bottom: 20px;
+        color: #ddd;
+    }
+</style>
+{% endblock %}
