@@ -4,18 +4,124 @@
 <div class="card">
     <h2>Messages</h2>
     <div class="messages-container">
-        {% comment %} Здесь будет список чатов/сообщений {% endcomment %}
-        <div class="empty-state">
-            <i class="fas fa-comments fa-3x"></i>
-            <p>Your messages will appear here</p>
-            <p>Start a conversation with someone!</p>
-        </div>
+        {% for chat in chats %}
+        {% with other_user=chat.participants.all %}
+            {% for user in other_user %}
+                {% if user != request.user %}
+                    <a href="{% url 'chat_view' chat.id %}" class="chat-item {% if chat.get_unread_count > 0 %}unread{% endif %}">
+                        <div class="chat-avatar">
+                            {% if user.profile.photo %}
+                                <img src="{{ user.profile.photo.url }}" alt="{{ user.username }}">
+                            {% else %}
+                                <i class="fas fa-user"></i>
+                            {% endif %}
+                            {% if chat.get_unread_count > 0 %}
+                                <span class="unread-badge">{{ chat.get_unread_count }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">{{ user.username }}</div>
+                            {% with last_message=chat.get_last_message %}
+                                {% if last_message %}
+                                    <div class="chat-preview">{{ last_message.content|truncatechars:30 }}</div>
+                                    <div class="chat-time">{{ last_message.timestamp|timesince }} ago</div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        {% endwith %}
+    {% endfor %}
     </div>
 </div>
 
 <style>
     .messages-container {
         padding: 20px;
+    }
+    
+    .chats-list {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .chat-item {
+        display: flex;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .chat-item:hover {
+        background-color: #f9f9f9;
+    }
+    
+    .chat-item.unread {
+        background-color: #f0f8ff;
+    }
+    
+    .chat-avatar {
+        position: relative;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        overflow: hidden;
+    }
+    
+    .chat-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .chat-avatar i {
+        font-size: 1.5em;
+        color: #777;
+    }
+    
+    .unread-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7em;
+    }
+    
+    .chat-info {
+        flex-grow: 1;
+        position: relative;
+    }
+    
+    .chat-name {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .chat-preview {
+        color: #666;
+        font-size: 0.9em;
+    }
+    
+    .chat-time {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 0.8em;
+        color: #999;
     }
     
     .empty-state {

@@ -10,6 +10,9 @@ from django.contrib.auth.models import User
 from .models import Post, Profile, ProfileRating
 from .forms import PostForm, ProfileForm, UserRegistrationForm
 
+from django.db.models import Q
+from .models import Chat, Message
+
 def home(request):
     if request.user.is_authenticated:
         return redirect('feed')
@@ -50,12 +53,13 @@ def view_profile(request):
     profile, created = Profile.objects.get_or_create(user=request.user)
     return render(request, 'view_profile.html', {'profile': profile})
 
+@login_required
 def view_profile_by_username(request, username):
     user = get_object_or_404(User, username=username)
     profile = get_object_or_404(Profile, user=user)
     return render(request, 'view_profile.html', {
         'profile': profile,
-        'viewed_user': user,
+        'viewed_user': user,  # Make sure this is included
         'is_owner': request.user == user
     })
 
@@ -98,10 +102,6 @@ def create_post(request):
         form = PostForm()
     return render(request, 'create_post.html', {'form': form})
 
-@login_required
-def messages_view(request):
-    return render(request, 'messages.html')
-
 @require_POST
 @login_required
 def rate_profile(request, profile_id):
@@ -131,3 +131,47 @@ def set_name(request):
         request.session['user_name'] = name if name else 'Аноним'
         return redirect('home')
     return render(request, 'set_name.html')
+
+@login_required
+def messages_view(request):
+    chats = Chat.objects.filter(participants=request.user).order_by('-updated_at')
+    return render(request, 'messages.html', {'chats': chats})
+
+@login_required
+def chat_view(request, chat_id):
+    chat = get_object_or_404(Chat, id=chat_id, participants=request.user)
+    
+    # Помечаем сообщения как прочитанные
+    Message.objects.filter(chat=chat).exclude(sender=request.user).update(is_read=True)
+    
+    if request.method == 'POST':
+        content = request.POST.get('content', '').strip()
+        if content:
+            Message.objects.create(
+                chat=chat,
+                sender=request.user,
+                content=content
+            )
+            chat.save()  # Обновляем updated_at
+            return redirect('chat_view', chat_id=chat.id)
+    
+    messages = chat.messages.all().order_by('timestamp')
+    return render(request, 'chat.html', {
+        'chat': chat,
+        'messages': messages,
+        'other_user': chat.participants.exclude(id=request.user.id).first()
+    })
+
+@login_required
+def start_chat(request, user_id):
+    other_user = get_object_or_404(User, id=user_id)
+    if other_user == request.user:
+        return redirect('messages_view')
+    
+    # Ищем существующий чат или создаем новый
+    chat = Chat.objects.filter(participants=request.user).filter(participants=other_user).first()
+    if not chat:
+        chat = Chat.objects.create()
+        chat.participants.add(request.user, other_user)
+    
+    return redirect('chat_view', chat_id=chat.id)

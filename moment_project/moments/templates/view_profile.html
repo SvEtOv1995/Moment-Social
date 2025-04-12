@@ -94,6 +94,12 @@
                 <p>{{ profile.bio }}</p>
             </div>
         {% endif %}
+
+        {% if not is_owner and viewed_user %}
+                <a href="{% url 'start_chat' viewed_user.id %}" class="btn btn-primary">
+                    <i class="fas fa-comment"></i> Send Message
+                </a>
+        {% endif %}
         
         <div class="profile-actions">
             {% if profile.user == request.user %}

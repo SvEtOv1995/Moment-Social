@@ -108,7 +108,7 @@ class Profile(models.Model):
     @receiver(post_save, sender=User)
     def create_profile(sender, instance, created, **kwargs):
         if created:
-            Profile.objects.create(user=instance)
+            Profile.objects.get_or_create(user=instance)
     
 class Match(models.Model):
     user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name='match_user1')
@@ -126,4 +126,40 @@ class ProfileRating(models.Model):
     class Meta:
         unique_together = ('rater', 'target')
 
+class Chat(models.Model):
+    participants = models.ManyToManyField(User, related_name='chats')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_last_message(self):
+        return self.messages.order_by('-timestamp').first()
+
+    @property
+    def unread_count(self, user):
+        return self.messages.filter(sender__in=self.participants.exclude(id=user.id), is_read=False).count()
+
+    def __str__(self):
+        return f"Chat {self.id} between {', '.join([u.username for u in self.participants.all()])}"
+    
+    def get_other_user(self, user):
+        """Get the other participant in the chat"""
+        return self.participants.exclude(id=user.id).first()
+
+class Message(models.Model):
+    chat = models.ForeignKey(Chat, related_name='messages', on_delete=models.CASCADE)
+    sender = models.ForeignKey(User, related_name='sent_messages', on_delete=models.CASCADE)
+    content = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+
+    def mark_as_read(self):
+        if not self.is_read:
+            self.is_read = True
+            self.save()
+
+    def __str__(self):
+        return f"Message from {self.sender.username} in chat {self.chat.id}"
+
+    class Meta:
+        ordering = ['timestamp']
 
